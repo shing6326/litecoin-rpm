@@ -13,13 +13,14 @@
 %endif
 
 Name:    litecoin
-Version: 0.16.2
+Version: 0.16.3
 Release: 1%{?dist}
 Summary: Peer to Peer Cryptographic Currency
 Group:   Applications/System
 License: MIT
 URL:     https://litecoin.org/
 Source0: https://github.com/litecoin-project/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1: https://raw.githubusercontent.com/bitcoin-core/packaging/3b394e8044cf67cd76aa47b84487aa2f3f3eed81/debian/bitcoin-qt.desktop
 
 Source10: litecoin.conf
 
@@ -150,9 +151,9 @@ install -p contrib/init/bitcoind.service %{buildroot}%{_unitdir}/litecoind.servi
 sed -i -e 's|-conf=/etc/bitcoin/bitcoin\.conf|-conf=/etc/bitcoin.conf -datadir=/var/lib/bitcoin|g' -e 's|bitcoin|litecoin|g' -e 's|Bitcoin|Litecoin|g' %{buildroot}%{_unitdir}/litecoind.service
 
 mkdir -p %{buildroot}%{_datadir}/applications
-mv contrib/debian/{bitcoin,litecoin}-qt.desktop
-sed -i -e 's|bitcoin|litecoin|g' -e 's|Bitcoin|Litecoin|g' contrib/debian/litecoin-qt.desktop
-desktop-file-install contrib/debian/litecoin-qt.desktop %{buildroot}%{_datadir}/applications/litecoin-qt.desktop
+mv %{SOURCE1} litecoin-qt.desktop
+sed -i -e 's|bitcoin|litecoin|g' -e 's|Bitcoin|Litecoin|g' litecoin-qt.desktop
+desktop-file-install litecoin-qt.desktop %{buildroot}%{_datadir}/applications/litecoin-qt.desktop
 %endif
 
 mkdir -p %{buildroot}%{_sysconfdir}/bash_completion.d
@@ -243,6 +244,9 @@ rm -rf %{buildroot}
 %attr(0644,root,root) %{_sysconfdir}/bash_completion.d/litecoind.bash-completion
 
 %changelog
+* Sat Sep 22 2018 Billy Chan <billy@mona.co> - 0.16.3-1
+- update to 0.16.3
+
 * Tue Sep 04 2018 Billy Chan <billy@mona.co> - 0.16.2-1
 - bump release
 
